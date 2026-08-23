@@ -1,0 +1,11 @@
+<div class="modal-backdrop" role="presentation" (click)="close()">
+  <section class="modal-panel" role="dialog" aria-modal="true" [attr.aria-labelledby]="labelledBy()" (click)="$event.stopPropagation()">
+    <header class="modal-panel__header">
+      <h2 [id]="labelledBy()">{{ title() }}</h2>
+      <button type="button" class="modal-panel__close" aria-label="Fechar modal" [disabled]="closeDisabled()" (click)="close()">
+        <ng-icon name="phosphorX" aria-hidden="true" />
+      </button>
+    </header>
+    <ng-content />
+  </section>
+</div>

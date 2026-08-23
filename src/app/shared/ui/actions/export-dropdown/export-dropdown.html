@@ -1,0 +1,17 @@
+<div class="export-dropdown">
+  <button type="button" class="export-button" [class.export-button--loading]="loading" [disabled]="disabled || loading" [attr.aria-expanded]="open" aria-haspopup="menu" (click)="toggle()">
+    @if (loading) { <ng-icon name="phosphorSpinnerGap" class="export-button__spinner" aria-hidden="true" /> }
+    <span>{{ loading ? 'Gerando...' : 'Exportar' }}</span>
+    @if (!loading) { <ng-icon name="phosphorCaretDown" aria-hidden="true" /> }
+  </button>
+  @if (open) {
+    <div class="export-menu" role="menu" aria-label="Formatos de exportação">
+      @for (option of options; track option.format) {
+        <button type="button" role="menuitem" class="export-menu__item" [disabled]="loading || disabled" (click)="select(option.format)">
+          <ng-icon [name]="option.icon" aria-hidden="true" />
+          <span>{{ option.label }}</span>
+        </button>
+      }
+    </div>
+  }
+</div>

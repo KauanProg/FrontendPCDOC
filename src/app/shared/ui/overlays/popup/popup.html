@@ -1,0 +1,68 @@
+<div
+  class="popup-backdrop"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="title()"
+  (click)="emitCancel()"
+>
+  <section
+    class="popup-card"
+    [class.popup-card--danger]="tone() === 'danger'"
+    [class.popup-card--warning]="tone() === 'warning'"
+    [class.popup-card--success]="tone() === 'success'"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="popup-card__header">
+      <div class="popup-card__heading">
+        <ng-icon
+          class="popup-card__alert"
+          [name]="alertIconName()"
+          aria-hidden="true"
+        />
+
+        <h2>{{ title() }}</h2>
+      </div>
+
+      <button
+        type="button"
+        class="popup-card__close"
+        aria-label="Fechar popup"
+        (click)="emitCancel()"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </header>
+
+    <div class="popup-card__body">
+      <p>
+        @if (messagePrefix() || messageHighlight() || messageSuffix()) {
+          {{ messagePrefix() }}
+          @if (messageHighlight()) {
+            <strong>{{ messageHighlight() }}</strong>
+          }
+          {{ messageSuffix() }}
+        } @else {
+          {{ message() }}
+        }
+      </p>
+    </div>
+
+    <footer class="popup-card__actions">
+      <button
+        type="button"
+        class="popup-card__button popup-card__button--secondary"
+        (click)="emitCancel()"
+      >
+        {{ cancelLabel() }}
+      </button>
+
+      <button
+        type="button"
+        class="popup-card__button popup-card__button--primary"
+        (click)="emitConfirm()"
+      >
+        {{ confirmLabel() }}
+      </button>
+    </footer>
+  </section>
+</div>

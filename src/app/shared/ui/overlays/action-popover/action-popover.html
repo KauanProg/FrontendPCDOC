@@ -1,0 +1,33 @@
+@if (actionPopover.state(); as state) {
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOpen]="true"
+  [cdkConnectedOverlayOrigin]="state.origin"
+  [cdkConnectedOverlayPositions]="positions"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayBackdropClass]="'action-popover-backdrop'"
+  [cdkConnectedOverlayScrollStrategy]="scrollStrategy"
+  [cdkConnectedOverlayPush]="true"
+  [cdkConnectedOverlayViewportMargin]="12"
+  [cdkConnectedOverlayFlexibleDimensions]="true"
+  (backdropClick)="actionPopover.close()"
+  (detach)="actionPopover.close()"
+>
+  <div class="action-popover" role="menu" (click)="$event.stopPropagation()">
+    @for (item of state.items; track item.id) {
+      <button
+        type="button"
+        class="action-popover__item"
+        [class.action-popover__item--info]="item.tone === 'info'"
+        [class.action-popover__item--warning]="item.tone === 'warning'"
+        [class.action-popover__item--success]="item.tone === 'success'"
+        [class.action-popover__item--danger]="item.tone === 'danger'"
+        (click)="actionPopover.select(item.id)"
+      >
+        <ng-icon [name]="item.iconName" aria-hidden="true" class="action-popover__icon" />
+        <span>{{ item.label }}</span>
+      </button>
+    }
+  </div>
+</ng-template>
+}

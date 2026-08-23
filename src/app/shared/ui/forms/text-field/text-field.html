@@ -1,0 +1,57 @@
+<div
+  class="ui-field"
+  [class.ui-field--invalid]="!!getErrorMessage()"
+  [class.ui-field--dynamic]="subscriptSizing === 'dynamic'"
+>
+  <label *ngIf="label" class="ui-field__label" [attr.for]="controlName">
+    {{ displayLabel }}
+    <span *ngIf="showRequiredMarker" class="required-marker">*</span>
+  </label>
+
+  <div class="ui-field__control">
+
+    <span *ngIf="prefixIcon" class="ui-field__icon" aria-hidden="true">{{ prefixIcon }}</span>
+
+    @if (form) {
+      <div class="text-field__form-control" [formGroup]="form">
+        <input
+          class="ui-field__input"
+          [id]="controlName"
+          [formControlName]="controlName"
+          [placeholder]="fieldPlaceholder"
+          [mask]="mask"
+          [prefix]="prefix"
+          [suffix]="suffix"
+          [thousandSeparator]="thousandSeparator"
+          [decimalMarker]="decimalMarker"
+          [dropSpecialCharacters]="dropSpecialCharacters"
+          [attr.inputmode]="shouldUseNumericOnly ? 'numeric' : null"
+          [attr.aria-invalid]="!!getErrorMessage()"
+          (input)="onInput($event)"
+        />
+      </div>
+    } @else {
+      <input
+        class="ui-field__input"
+        [id]="controlName"
+        [value]="value()"
+        [disabled]="isDisabled"
+        [placeholder]="fieldPlaceholder"
+        [mask]="mask"
+        [prefix]="prefix"
+        [suffix]="suffix"
+        [thousandSeparator]="thousandSeparator"
+        [decimalMarker]="decimalMarker"
+        [dropSpecialCharacters]="dropSpecialCharacters"
+        [attr.inputmode]="shouldUseNumericOnly ? 'numeric' : null"
+        [attr.aria-invalid]="!!getErrorMessage()"
+        (input)="onInput($event)"
+        (blur)="onSignalBlur()"
+      />
+    }
+
+    <span *ngIf="suffixIcon" class="ui-field__icon" aria-hidden="true">{{ suffixIcon }}</span>
+  </div>
+
+  <div class="ui-field__error" role="alert">{{ getErrorMessage() }}</div>
+</div>

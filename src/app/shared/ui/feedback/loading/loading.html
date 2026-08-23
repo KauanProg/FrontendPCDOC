@@ -1,0 +1,14 @@
+<div [ngClass]="hostClasses()" role="status" [attr.aria-label]="label()">
+  <canvas class="loading__animation" #canvas></canvas>
+
+  @if (showLabel()) {
+    <span class="loading__label">
+      {{ label().replaceAll('.', '') }}
+      <span class="loading__dots" aria-hidden="true">
+        <span class="loading__dot">.</span>
+        <span class="loading__dot">.</span>
+        <span class="loading__dot">.</span>
+      </span>
+    </span>
+  }
+</div>

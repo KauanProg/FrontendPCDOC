@@ -1,0 +1,61 @@
+:host {
+  display: inline-flex;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  min-height: 24px;
+  padding: 4px 10px;
+  background: var(--tag-bg, #eef2f7);
+  color: var(--tag-color, #334155);
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.tag--permission {
+  border-radius: 8px;
+}
+
+.tag--status {
+  border-radius: 100px;
+}
+
+.tag--permission-admin {
+  --tag-bg: #e5e7eb;
+  --tag-color: #111827;
+}
+
+.tag--permission-superuser {
+  --tag-bg: #F6FEDB;
+  --tag-color: #396800;
+}
+
+.tag--permission-employee {
+  --tag-bg: #e0f2fe;
+  --tag-color: #00027C;
+}
+
+.tag--permission-focal-point {
+  --tag-bg: #fef3c7;
+  --tag-color: #7C2F00;
+}
+
+.tag--permission-auditor {
+  --tag-bg: #ede9fe;
+  --tag-color: #63007C;
+}
+
+.tag--status-active {
+  --tag-bg: var(--color-surface-positive-soft);
+  --tag-color: var(--color-status-success);
+}
+
+.tag--status-inactive {
+  --tag-bg: var(--color-surface-negative-soft);
+  --tag-color: var(--color-status-danger);
+}

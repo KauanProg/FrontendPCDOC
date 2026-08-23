@@ -1,0 +1,34 @@
+<section class="notification-stack" aria-live="polite" aria-atomic="true">
+  @for (notification of notifications(); track notification.id) {
+    <article
+      class="notification-card"
+      [class.notification-card--success]="notification.variant === 'success'"
+      [class.notification-card--error]="notification.variant === 'error'"
+      [class.notification-card--warning]="notification.variant === 'warning'"
+      [class.notification-card--info]="notification.variant === 'info'"
+      [style.--notification-duration]="notification.duration"
+      role="status"
+    >
+      <div class="notification-card__body">
+        <ng-icon
+          class="notification-card__icon"
+          [name]="notification.icon"
+          aria-hidden="true"
+        />
+
+        <p class="notification-card__message">
+          {{ notification.message }}
+        </p>
+
+        <button
+          type="button"
+          class="notification-card__close"
+          [attr.aria-label]="notification.closeLabel"
+          (click)="close(notification.id)"
+        >
+          <ng-icon name="phosphorX" aria-hidden="true" />
+        </button>
+      </div>
+    </article>
+  }
+</section>

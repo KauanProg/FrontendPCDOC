@@ -1,0 +1,19 @@
+<div [formGroup]="form" class="ui-field" [class.ui-field--invalid]="!!getErrorMessage()">
+  <fieldset class="ui-field__control">
+    @if (label) {
+      <legend class="ui-field__label">
+        {{ displayLabel }}
+        <span *ngIf="showRequiredMarker" class="required-marker">*</span>
+      </legend>
+    }
+    <input
+      class="ui-field__input time-field__input"
+      [id]="controlName"
+      type="time"
+      [formControlName]="controlName"
+      [placeholder]="fieldPlaceholder"
+    />
+  </fieldset>
+  <div class="ui-field__error" role="alert">{{ getErrorMessage() }}</div>
+</div>
+

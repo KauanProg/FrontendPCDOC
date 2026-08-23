@@ -1,0 +1,22 @@
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th {
+  font-weight: 600;
+  background: var(--color-surface-table-head, #475569);
+  color: #fff;
+  text-align: left;
+}
+
+td,
+th {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tbody tr:nth-child(even) td {
+  background: #f7f8fa;
+}

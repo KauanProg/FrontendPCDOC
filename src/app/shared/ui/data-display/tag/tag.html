@@ -1,0 +1,9 @@
+<span
+  class="tag"
+  [ngClass]="[
+    'tag--' + kind(),
+    'tag--' + kind() + '-' + variant()
+  ]"
+>
+  {{ label() }}
+</span>

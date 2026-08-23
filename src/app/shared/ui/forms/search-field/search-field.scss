@@ -1,0 +1,82 @@
+.search-container {
+  width: 420px;
+  max-width: calc(100vw - 48px);
+  transform-origin: left center;
+  transition: width 0.3s ease;
+}
+
+.search-container:focus-within {
+  width: 520px;
+  max-width: calc(100vw - 48px);
+}
+
+.search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  background: var(--color-surface-muted);
+  box-sizing: border-box;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.search-field input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px 0 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 14px;
+  color: var(--color-text-default);
+}
+
+.search-field input::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+.search-field__icon,
+.search-field__suffix {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  width: 42px;
+  color: var(--color-text-muted);
+}
+
+.search-field__icon ng-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.search-field:focus-within {
+  border-color: var(--color-primary-700);
+  background: var(--color-white);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-primary-700) 14%, transparent);
+}
+
+@media (max-width: 700px) {
+  .search-container,
+  .search-container:focus-within {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.search-field__label {
+  position: absolute;
+  top: -8px;
+  left: 18px;
+  padding: 0 4px;
+  background: var(--color-surface-muted);
+  color: #555d69;
+  font-size: 12px;
+}

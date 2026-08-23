@@ -1,0 +1,38 @@
+<div class="table-scroll">
+  <table>
+    <colgroup>
+      <col *ngFor="let column of visibleColumns" [ngStyle]="getColumnStyles(column)" />
+    </colgroup>
+
+    <thead>
+      <tr>
+        <th
+          *ngFor="let column of visibleColumns"
+          [class]="'table-column--' + column.key"
+          scope="col"
+        >
+          {{ column.label }}
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let row of paginatedData">
+        <td
+          *ngFor="let column of visibleColumns"
+          [class]="'table-column--' + column.key"
+        >
+          <ng-container *ngIf="hasCustomTemplate(column); else defaultCell">
+            <ng-container
+              *ngTemplateOutlet="getCustomTemplate(column); context: createCellContext(row, column)"
+            ></ng-container>
+          </ng-container>
+
+          <ng-template #defaultCell>
+            {{ getCellValue(row, column) }}
+          </ng-template>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

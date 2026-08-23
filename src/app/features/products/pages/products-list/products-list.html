@@ -1,0 +1,67 @@
+    <section class="title">
+      <div>
+        <h2>Produtos</h2>
+        <p>Gerencie os itens disponíveis no estoque.</p>
+      </div>
+      <button (click)="open()">＋ Novo produto</button>
+    </section>
+    <div class="api-error" *ngIf="facade.error()">{{ facade.error() }}</div>
+    <div class="card">
+      <div class="toolbar">
+          <app-search-field [form]="searchForm" controlName="search" placeholder="Buscar produto"></app-search-field><span
+          >{{ filtered().length }} produtos</span
+        >
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Produto</th>
+            <th>Descrição</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th class="actions-heading">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of rows()">
+            <td>
+              <strong>{{ p.name }}</strong>
+            </td>
+            <td>{{ p.description }}</td>
+            <td>{{ p.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }}</td>
+            <td>
+              <span class="stock" [class.low]="p.quantity < 5">{{ p.quantity }} un.</span>
+            </td>
+            <td class="actions"><button class="icon-button edit" (click)="open(p)" title="Editar" aria-label="Editar produto"><ng-icon name="phosphorPencil"></ng-icon></button><button class="icon-button buy" (click)="buy(p)" title="Comprar" aria-label="Comprar produto"><ng-icon name="phosphorShoppingCart"></ng-icon></button><button class="icon-button sell" (click)="sell(p)" title="Vender" aria-label="Vender produto"><ng-icon name="phosphorCurrencyDollar"></ng-icon></button><button class="icon-button delete" (click)="remove(p)" title="Excluir" aria-label="Excluir produto"><ng-icon name="phosphorTrash"></ng-icon></button></td>
+          </tr>
+        </tbody>
+      </table>
+      <footer class="table-pagination" aria-label="Paginação da tabela de produtos">
+        <button type="button" class="table-pagination__arrow" aria-label="Página anterior" [disabled]="page === 1" (click)="goToPage(page - 1)">‹</button>
+        <div class="table-pagination__pages"><button type="button" *ngFor="let pageNumber of pages()" class="table-pagination__page" [class.table-pagination__page--active]="page === pageNumber" (click)="goToPage(pageNumber)">{{ pageNumber }}</button></div>
+        <button type="button" class="table-pagination__arrow" aria-label="Próxima página" [disabled]="page === totalPages()" (click)="goToPage(page + 1)">›</button>
+      </footer>
+    </div>
+    <div class="modal" *ngIf="movement">
+      <div class="dialog">
+        <h3>{{ movement.type === 'ENTRADA' ? 'Comprar' : 'Vender' }} produto</h3>
+        <p>{{ movement.product.name }}</p>
+        <app-text-field [form]="quantityForm" controlName="quantity" label="Quantidade" [numericOnly]="true"></app-text-field>
+        <footer><button class="ghost" (click)="movement = null">Cancelar</button><button (click)="confirmMovement()">Confirmar</button></footer>
+      </div>
+    </div>
+    <app-popup *ngIf="deleting" title="Excluir produto" [message]="deleteMessage" confirmLabel="Excluir" (confirm)="confirmDelete()" (cancel)="deleting = null"></app-popup>
+    <div class="modal" *ngIf="editing">
+      <div class="dialog">
+        <h3>{{ form.id ? 'Editar' : 'Novo' }} produto</h3>
+        <app-text-field [form]="productForm" controlName="name" label="Nome *" placeholder="Nome do produto" subscriptSizing="dynamic"></app-text-field>
+        <app-text-field [form]="productForm" controlName="description" label="Descrição" placeholder="Descrição do produto" subscriptSizing="dynamic"></app-text-field>
+        <app-text-field [form]="productForm" controlName="price" label="Preço *" placeholder="0,00" [numericOnly]="true" prefix="R$ " subscriptSizing="dynamic"></app-text-field>
+        <app-text-field [form]="productForm" controlName="quantity" label="Quantidade *" placeholder="0" [numericOnly]="true" subscriptSizing="dynamic"></app-text-field>
+        <footer>
+          <button class="ghost" (click)="editing = false">Cancelar</button
+          ><button (click)="save()">Salvar produto</button>
+        </footer>
+      </div>
+    </div>
+

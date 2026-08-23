@@ -1,0 +1,117 @@
+
+      .crumb {
+        color: #94a29b;
+        font-size: 12px;
+        margin-bottom: 22px;
+      }
+      .title {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        margin-bottom: 28px;
+      }
+      h2 {
+        font-size: 32px;
+        margin: 5px 0;
+      }
+      p {
+        color: #82918a;
+        margin: 0;
+        font-size: 13px;
+      }
+      button {
+        border: 0;
+        background: #079d53;
+        color: #fff;
+        border-radius: 8px;
+        padding: 12px 18px;
+        font-weight: 800;
+        cursor: pointer;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #e5eee8;
+        border-radius: 14px;
+        padding: 20px;
+      }
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        color: #8b9992;
+        font-size: 12px;
+      }
+      .toolbar input {
+        width: 260px;
+        padding: 11px;
+        border: 1px solid #e3ebe6;
+        border-radius: 8px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th {
+        text-align: left;
+        color: #93a098;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      td,
+      th {
+        padding: 16px 10px;
+        border-bottom: 1px solid #edf2ef;
+      }
+      .stock {
+        background: #e7f8ee;
+        color: #078c4a;
+        padding: 5px 9px;
+        border-radius: 20px;
+      }
+      .low {
+        background: #fff2df;
+        color: #bd7415;
+      }
+      .link {
+        background: none;
+        color: #078c4a;
+        padding: 0;
+      }
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: #18372a55;
+        display: grid;
+        place-items: center;
+      }
+      .dialog {
+        background: #fff;
+        width: 420px;
+        padding: 28px;
+        border-radius: 16px;
+        display: grid;
+        gap: 14px;
+      }
+      .dialog h3 {
+        margin: 0;
+        font-size: 22px;
+      }
+      .dialog input {
+        padding: 13px;
+        border: 1px solid #dfe9e3;
+        border-radius: 8px;
+      }
+      .dialog footer {
+        display: flex;
+        justify-content: end;
+        gap: 10px;
+      }
+      .ghost {
+        background: #eef5f0;
+        color: #52655b;
+      }
+    
+.api-error{background:#fff3f0;border:1px solid #ffd5cc;color:#b54f40;border-radius:10px;padding:13px 16px;margin-bottom:18px;font-size:13px}.actions-heading{text-align:right}.actions{display:flex;justify-content:flex-end;gap:6px}.icon-button{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;padding:0;border:1px solid #e4eee8;border-radius:8px;background:#fff;color:#6c7d74;cursor:pointer}.icon-button ng-icon{font-size:17px}.icon-button:hover{background:#eaf8ef}.icon-button.edit:hover{color:#087f49}.icon-button.buy:hover{color:#1876b8}.icon-button.sell:hover{color:#c5791e}.icon-button.delete:hover{color:#c44c46}

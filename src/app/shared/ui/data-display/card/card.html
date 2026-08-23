@@ -1,0 +1,23 @@
+<article
+  class="metric-card"
+  [class.metric-card--highlight]="highlighted()"
+  [class.metric-card--compact]="compactValue()"
+>
+  <div class="metric-card__top">
+    <strong>
+      {{ value() }}
+      @if (valueSuffix()) {
+        <span>{{ valueSuffix() }}</span>
+      }
+    </strong>
+    <span class="metric-card__icon" aria-hidden="true">
+      <ng-icon [name]="iconName()" aria-hidden="true" />
+    </span>
+  </div>
+  <div class="metric-card__body">
+    <span class="metric-card__label">{{ label() }}</span>
+    @if (showSecondaryLabel() && secondaryLabel()) {
+      <span class="metric-card__label-secondary">{{ secondaryLabel() }}</span>
+    }
+  </div>
+</article>
