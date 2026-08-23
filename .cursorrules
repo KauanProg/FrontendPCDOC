@@ -1,0 +1,24 @@
+# Regras de commits
+
+Ao criar ou sugerir commits neste projeto, siga estas regras:
+
+- Use Conventional Commits:
+  `<tipo>(<escopo opcional>): <descrição no imperativo>`
+- Tipos permitidos: `feat`, `fix`, `refactor`, `test`, `docs`, `build`, `chore` e `perf`.
+- Escreva a descrição em português, em letras minúsculas e no modo imperativo.
+- Não termine a primeira linha com ponto.
+- Mantenha a primeira linha com no máximo 72 caracteres.
+- Faça commits pequenos e focados em uma única alteração lógica.
+- Não misture refatorações, correções e mudanças de funcionalidade no mesmo commit.
+- Antes de sugerir um commit, verifique os arquivos alterados e não inclua arquivos gerados, como `build/`, `bin/`, `.gradle/` ou arquivos de configuração local.
+- Nunca inclua senhas, tokens, chaves de API ou outros dados sensíveis.
+- Se o commit precisar de mais contexto, deixe uma linha em branco após o título e escreva um corpo objetivo explicando o motivo da mudança.
+- Ao corrigir um problema, inclua ou atualize testes quando aplicável.
+
+Exemplos:
+
+- `feat(auth): adicionar autenticação de usuários`
+- `fix(reservas): corrigir validação de datas`
+- `test(reservas): adicionar testes para criação de reserva`
+- `refactor: reorganizar estrutura dos pacotes`
+- `docs: atualizar instruções de execução`
