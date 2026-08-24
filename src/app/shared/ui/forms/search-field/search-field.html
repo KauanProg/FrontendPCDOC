@@ -1,0 +1,13 @@
+<div class="search-field">
+  <span class="search-field__icon" aria-hidden="true">⌕</span>
+  <input
+    class="search-field__input"
+    type="search"
+    [value]="value()"
+    [disabled]="disabled()"
+    [placeholder]="placeholder"
+    aria-label="Buscar"
+    (input)="onInput($event)"
+    (blur)="onBlur()"
+  />
+</div>

@@ -8,14 +8,19 @@
 <div class="api-error" *ngIf="facade.error()">{{ facade.error() }}</div>
 <div class="card">
   <div class="toolbar">
-    <input
-      class="toolbar-search"
+    <app-search-field
       [formField]="searchForm.search"
-      (input)="onSearch()"
       placeholder="Buscar produto"
-    /><span>{{ facade.productsPage().totalElements }} produtos</span>
+      (inputChange)="onSearch()"
+    ></app-search-field><span>{{ facade.productsPage().totalElements }} produtos</span>
   </div>
-  <div class="table-scroll">
+  <app-table
+    [page]="page"
+    [totalPages]="totalPages()"
+    [pageNumbers]="pages()"
+    ariaLabel="Paginação da tabela de produtos"
+    (pageChange)="goToPage($event)"
+  >
     <table>
       <thead>
         <tr>
@@ -102,53 +107,16 @@
         </tr>
       </tbody>
     </table>
-  </div>
-  <footer class="table-pagination" aria-label="Paginação da tabela de produtos">
-    <button
-      type="button"
-      class="table-pagination__arrow"
-      aria-label="Página anterior"
-      [disabled]="page === 1"
-      (click)="goToPage(page - 1)"
-    >
-      ‹
-    </button>
-    <div class="table-pagination__pages">
-      <button
-        type="button"
-        *ngFor="let pageNumber of pages()"
-        class="table-pagination__page"
-        [class.table-pagination__page--active]="page === pageNumber"
-        (click)="goToPage(pageNumber)"
-      >
-        {{ pageNumber }}
-      </button>
-    </div>
-    <button
-      type="button"
-      class="table-pagination__arrow"
-      aria-label="Próxima página"
-      [disabled]="page === totalPages()"
-      (click)="goToPage(page + 1)"
-    >
-      ›
-    </button>
-  </footer>
+  </app-table>
 </div>
-<div class="modal" *ngIf="movement">
-  <div class="dialog">
-    <h3>{{ movement.type === 'ENTRADA' ? 'Comprar' : 'Vender' }} produto</h3>
-    <app-text-field
-      [formField]="quantityForm.quantity"
-      label="Quantidade"
-      [numericOnly]="true"
-    ></app-text-field>
-    <footer>
-      <button class="ghost" (click)="movement = null">Cancelar</button
-      ><button (click)="confirmMovement()">Confirmar</button>
-    </footer>
-  </div>
-</div>
+<app-movement-modal
+  [open]="!!movement"
+  [product]="movement?.product ?? null"
+  [type]="movement?.type ?? 'ENTRADA'"
+  [quick]="true"
+  (confirmed)="confirmMovement($event)"
+  (cancelled)="movement = null"
+></app-movement-modal>
 <app-popup
   *ngIf="deleting"
   title="Excluir produto"
@@ -159,39 +127,9 @@
   (confirm)="confirmDelete()"
   (cancel)="deleting = null"
 ></app-popup>
-<div class="modal" *ngIf="editing">
-  <div class="dialog">
-    <h3>{{ form.id ? 'Editar' : 'Novo' }} produto</h3>
-    <app-text-field
-      [formField]="productForm.name"
-      label="Nome *"
-      placeholder="Nome do produto"
-      subscriptSizing="dynamic"
-    ></app-text-field>
-    <app-text-field
-      [formField]="productForm.description"
-      label="Descrição"
-      placeholder="Descrição do produto"
-      subscriptSizing="dynamic"
-    ></app-text-field>
-    <app-text-field
-      [formField]="productForm.price"
-      label="Preço *"
-      placeholder="0,00"
-      [numericOnly]="true"
-      prefix="R$ "
-      subscriptSizing="dynamic"
-    ></app-text-field>
-    <app-text-field
-      [formField]="productForm.quantity"
-      label="Quantidade *"
-      placeholder="0"
-      [numericOnly]="true"
-      subscriptSizing="dynamic"
-    ></app-text-field>
-    <footer>
-      <button class="ghost" (click)="editing = false">Cancelar</button
-      ><button (click)="save()">Salvar produto</button>
-    </footer>
-  </div>
-</div>
+<app-product-modal
+  [open]="editing"
+  [product]="form.id ? form : null"
+  (saved)="save($event)"
+  (cancelled)="editing = false"
+></app-product-modal>

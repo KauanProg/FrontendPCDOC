@@ -12,7 +12,13 @@
     </div>
     <span>{{ facade.movementsPage().totalElements }} movimentações</span>
   </div>
-  <div class="table-scroll">
+  <app-table
+    [page]="page"
+    [totalPages]="totalPages()"
+    [pageNumbers]="pages()"
+    ariaLabel="Paginação da tabela de movimentações"
+    (pageChange)="goToPage($event)"
+  >
     <table>
       <thead>
         <tr>
@@ -102,62 +108,11 @@
         </tr>
       </tbody>
     </table>
-  </div>
-  <footer class="table-pagination" aria-label="Paginação da tabela de movimentações">
-    <button
-      type="button"
-      class="table-pagination__arrow"
-      aria-label="Página anterior"
-      [disabled]="page === 1"
-      (click)="goToPage(page - 1)"
-    >
-      ‹
-    </button>
-    <div class="table-pagination__pages">
-      <button
-        type="button"
-        *ngFor="let pageNumber of pages()"
-        class="table-pagination__page"
-        [class.table-pagination__page--active]="page === pageNumber"
-        (click)="goToPage(pageNumber)"
-      >
-        {{ pageNumber }}
-      </button>
-    </div>
-    <button
-      type="button"
-      class="table-pagination__arrow"
-      aria-label="Próxima página"
-      [disabled]="page === totalPages()"
-      (click)="goToPage(page + 1)"
-    >
-      ›
-    </button>
-  </footer>
+  </app-table>
 </div>
-<div class="modal" *ngIf="showModal">
-  <div class="dialog">
-    <div class="dialog-head">
-      <div>
-        <span class="eyebrow">ESTOQUE</span>
-        <h3>Registrar movimentação</h3>
-      </div>
-      <button class="close" (click)="showModal = false">×</button>
-    </div>
-    <label
-      >Produto<select [(ngModel)]="selectedProduct">
-        <option value="" disabled>Selecione um produto</option>
-        <option *ngFor="let p of facade.products()" [value]="p.id">{{ p.name }}</option>
-      </select></label
-    ><label
-      >Tipo<select [(ngModel)]="movementType">
-        <option value="ENTRADA">Entrada de estoque</option>
-        <option value="SAIDA">Saída de estoque</option>
-      </select></label
-    ><label>Quantidade<input type="number" [(ngModel)]="quantity" min="1" /></label>
-    <footer>
-      <button class="secondary" (click)="showModal = false">Cancelar</button
-      ><button class="primary" (click)="submit()">Salvar movimentação</button>
-    </footer>
-  </div>
-</div>
+<app-movement-modal
+  [open]="showModal"
+  [products]="facade.products()"
+  (confirmed)="submit($event)"
+  (cancelled)="showModal = false"
+></app-movement-modal>

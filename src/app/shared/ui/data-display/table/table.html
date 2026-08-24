@@ -1,0 +1,34 @@
+<div class="table-scroll">
+  <ng-content></ng-content>
+</div>
+<footer class="table-pagination" [attr.aria-label]="ariaLabel">
+  <button
+    type="button"
+    class="table-pagination__arrow"
+    aria-label="Página anterior"
+    [disabled]="page === 1"
+    (click)="goToPage(page - 1)"
+  >
+    ‹
+  </button>
+  <div class="table-pagination__pages">
+    <button
+      type="button"
+      *ngFor="let pageNumber of pageNumbers"
+      class="table-pagination__page"
+      [class.table-pagination__page--active]="page === pageNumber"
+      (click)="goToPage(pageNumber)"
+    >
+      {{ pageNumber }}
+    </button>
+  </div>
+  <button
+    type="button"
+    class="table-pagination__arrow"
+    aria-label="Próxima página"
+    [disabled]="page === totalPages"
+    (click)="goToPage(page + 1)"
+  >
+    ›
+  </button>
+</footer>

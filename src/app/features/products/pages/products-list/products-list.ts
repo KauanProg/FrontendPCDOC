@@ -1,18 +1,21 @@
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormField, form, min, required } from '@angular/forms/signals';
+import { FormField, form } from '@angular/forms/signals';
 import { NgIcon } from '@ng-icons/core';
-import { TextFieldComponent } from '../../../../shared/ui/forms/text-field/text-field';
 import { PopupComponent } from '../../../../shared/ui/overlays/popup/popup';
+import { SearchFieldComponent } from '../../../../shared/ui/forms/search-field/search-field';
+import { TableComponent } from '../../../../shared/ui/data-display/table/table';
 import { ProductsFacade } from '../../facade/products.facade';
 import { Product } from '../../models/products.models';
+import { MovementModalComponent, MovementRequest } from '../../components/movement-modal/movement-modal';
+import { ProductModalComponent } from '../../components/product-modal/product-modal';
 import { NotificationService } from '../../../../shared/ui/feedback/notification/notification.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { getApiErrorMessage } from '../../../../shared/utils/http-error.util';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, FormField, NgIcon, TextFieldComponent, PopupComponent],
+  imports: [CommonModule, FormField, NgIcon, PopupComponent, ProductModalComponent, MovementModalComponent, SearchFieldComponent, TableComponent],
   templateUrl: './products-list.html',
   styleUrl: './products-list.css',
 })
@@ -21,19 +24,6 @@ export class ProductsPage implements OnDestroy {
   private readonly notifications = inject(NotificationService);
   searchModel = signal({ search: '' });
   searchForm = form(this.searchModel);
-  quantityModel = signal({ quantity: 1 });
-  quantityForm = form(this.quantityModel, (schemaPath) => {
-    required(schemaPath.quantity, { message: 'Informe a quantidade' });
-    min(schemaPath.quantity, 1, { message: 'A quantidade deve ser maior que zero' });
-  });
-  productModel = signal({ name: '', description: '', price: 0, quantity: 0 });
-  productForm = form(this.productModel, (schemaPath) => {
-    required(schemaPath.name, { message: 'Informe o nome' });
-    required(schemaPath.price, { message: 'Informe o preço' });
-    min(schemaPath.price, 0, { message: 'O preço não pode ser negativo' });
-    required(schemaPath.quantity, { message: 'Informe a quantidade' });
-    min(schemaPath.quantity, 0, { message: 'A quantidade não pode ser negativa' });
-  });
   page = 1;
   sortKey: 'name' | 'price' | 'quantity' = 'name';
   sortDirection: 'asc' | 'desc' = 'asc';
@@ -71,28 +61,16 @@ export class ProductsPage implements OnDestroy {
 
   open(p?: Product) {
     this.form = p ? { ...p } : { name: '', description: '', price: 0, quantity: 0 };
-    this.productModel.set({
-      name: this.form.name,
-      description: this.form.description,
-      price: this.form.price,
-      quantity: this.form.quantity,
-    });
-    this.productForm().reset();
     this.editing = true;
   }
 
-  save() {
-    if (this.productForm().invalid()) {
-      this.productForm().markAsTouched();
-      return;
-    }
-    const values = this.productModel();
-    this.facade.save({ ...this.form, ...values }).subscribe({
+  save(product: Product) {
+    this.facade.save(product).subscribe({
       next: () => {
         this.editing = false;
         this.loadProducts();
         this.notifications.success(
-          this.form.id ? 'Produto atualizado com sucesso.' : 'Produto criado com sucesso.',
+          product.id ? 'Produto atualizado com sucesso.' : 'Produto criado com sucesso.',
         );
       },
       error: (error: HttpErrorResponse) =>
@@ -161,28 +139,22 @@ export class ProductsPage implements OnDestroy {
   }
 
   openMovement(product: Product, type: 'ENTRADA' | 'SAIDA') {
-    this.quantityModel.set({ quantity: 1 });
-    this.quantityForm().reset();
     this.movement = { product, type };
   }
 
-  confirmMovement() {
-    const current = this.movement;
-    const quantity = this.quantityModel().quantity;
-    if (current?.product.id && quantity && this.quantityForm().valid())
-      this.facade.movement(current.product.id, current.type, quantity).subscribe({
+  confirmMovement(request: MovementRequest) {
+    this.facade.movement(request.productId, request.type, request.quantity).subscribe({
         next: () => {
           this.loadProducts();
           this.notifications.success(
-            current.type === 'ENTRADA'
+            request.type === 'ENTRADA'
               ? 'Entrada registrada com sucesso.'
               : 'Venda registrada com sucesso.',
           );
+          this.movement = null;
         },
         error: () => this.notifications.error('Não foi possível registrar a movimentação.'),
       });
-    else this.quantityForm().markAsTouched();
-    this.movement = null;
   }
 }
 

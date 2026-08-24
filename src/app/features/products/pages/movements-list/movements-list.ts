@@ -3,19 +3,18 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductsFacade } from '../../facade/products.facade';
 import { NotificationService } from '../../../../shared/ui/feedback/notification/notification.service';
+import { MovementModalComponent, MovementRequest } from '../../components/movement-modal/movement-modal';
+import { TableComponent } from '../../../../shared/ui/data-display/table/table';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MovementModalComponent, TableComponent],
   templateUrl: './movements-list.html',
   styleUrl: './movements-list.css',
 })
 export class MovementsPage {
   facade = inject(ProductsFacade);
   private readonly notifications = inject(NotificationService);
-  selectedProduct = '';
-  movementType = 'ENTRADA';
-  quantity = 1;
   showModal = false;
   page = 1;
   sortKey: 'product' | 'type' | 'quantity' | 'unitPrice' | 'total' | 'createdAt' = 'createdAt';
@@ -72,14 +71,13 @@ export class MovementsPage {
     this.showModal = true;
   }
 
-  submit() {
-    if (!this.selectedProduct) return;
-    this.facade.movement(this.selectedProduct, this.movementType, this.quantity).subscribe({
+  submit(request: MovementRequest) {
+    this.facade.movement(request.productId, request.type, request.quantity).subscribe({
       next: () => {
         this.showModal = false;
         this.loadMovements();
         this.notifications.success(
-          this.movementType === 'ENTRADA'
+          request.type === 'ENTRADA'
             ? 'Entrada registrada com sucesso.'
             : 'Venda registrada com sucesso.',
         );

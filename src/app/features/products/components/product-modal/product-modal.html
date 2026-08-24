@@ -1,0 +1,36 @@
+<div class="modal" *ngIf="open">
+  <div class="dialog">
+    <h3>{{ product?.id ? 'Editar' : 'Novo' }} produto</h3>
+    <app-text-field
+      [formField]="productForm.name"
+      label="Nome *"
+      placeholder="Nome do produto"
+      subscriptSizing="dynamic"
+    ></app-text-field>
+    <app-text-field
+      [formField]="productForm.description"
+      label="Descrição"
+      placeholder="Descrição do produto"
+      subscriptSizing="dynamic"
+    ></app-text-field>
+    <app-text-field
+      [formField]="productForm.price"
+      label="Preço *"
+      placeholder="0,00"
+      [numericOnly]="true"
+      prefix="R$ "
+      subscriptSizing="dynamic"
+    ></app-text-field>
+    <app-text-field
+      [formField]="productForm.quantity"
+      label="Quantidade *"
+      placeholder="0"
+      [numericOnly]="true"
+      subscriptSizing="dynamic"
+    ></app-text-field>
+    <footer>
+      <button class="ghost" (click)="cancelled.emit()">Cancelar</button>
+      <button (click)="save()">Salvar produto</button>
+    </footer>
+  </div>
+</div>
