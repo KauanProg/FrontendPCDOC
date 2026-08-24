@@ -1,10 +1,11 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { NgIcon } from '@ng-icons/core';
+import { NotificationComponent } from './shared/ui/feedback/notification/notification';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgIcon],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, NgIcon, NotificationComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

@@ -61,7 +61,7 @@ export class NotificationService {
     options?: NotificationOptions
   ): void {
     const id = ++this.nextId;
-    const duration = options?.duration ?? 3000;
+    const duration = options?.duration ?? 2000;
     const item: NotificationItem = {
       id,
       message,

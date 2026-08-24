@@ -9,7 +9,7 @@
   height: 100%;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 16px;
   box-sizing: border-box;
   background: rgba(14, 16, 20, 0.46);
   backdrop-filter: blur(4px);
@@ -18,44 +18,44 @@
 .popup-card {
   --popup-accent: #c40000;
   width: 100%;
-  max-width: 600px;
-  max-height: 90vh;
+  width: min(100%, 540px);
+  max-height: calc(100dvh - 32px);
   overflow-y: auto;
 
-  border-radius: 16px;
+  border-radius: 18px;
   background: #fff;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
-  padding: 28px 32px 26px;
+  padding: 26px 28px 24px;
 }
 
 .popup-card__header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-bottom: 18px;
+  padding-bottom: 20px;
   border-bottom: 1px solid #bfc3ca;
 }
 
 .popup-card__heading {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .popup-card__heading h2 {
   margin: 0;
   color: #30323a;
-  font-size: clamp(1.7rem, 2vw, 2.15rem);
+  font-size: clamp(1.2rem, 2.4vw, 1.6rem);
   line-height: 1.15;
 }
 
 .popup-card__alert {
-  width: 1.9rem;
-  height: 1.9rem;
-  flex: 0 0 1.9rem;
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: 0 0 1.65rem;
   color: var(--popup-icon-color, var(--popup-accent));
-  font-size: 1.9rem;
+  font-size: 1.65rem;
 }
 
 .popup-card__close {
@@ -66,7 +66,10 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  padding: 2px;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  padding: 0;
 }
 
 .popup-card__close:hover,
@@ -79,19 +82,19 @@
 
 .popup-card__close span {
   display: inline-block;
-  font-size: 2rem;
+  font-size: 1.8rem;
   line-height: 1;
 }
 
 .popup-card__body {
-  padding: 30px 0 28px;
+  padding: 24px 0 22px;
 }
 
 .popup-card__body p {
   margin: 0;
   color: #444852;
-  font-size: 1.05rem;
-  line-height: 1.38;
+  font-size: 1rem;
+  line-height: 1.55;
   white-space: pre-line;
 }
 
@@ -103,14 +106,16 @@
 .popup-card__actions {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 12px;
 }
 
 .popup-card__button {
-  min-width: 138px;
+  min-width: 126px;
   min-height: 48px;
-  border-radius: 10px;
-  font-size: 1rem;
+  border-radius: 9px;
+  padding: 0 18px;
+  font-size: .95rem;
   font-weight: 600;
   cursor: pointer;
   transition: filter 120ms ease;
@@ -156,12 +161,12 @@
 
 @media (max-width: 680px) {
   .popup-card {
-    border-radius: 22px;
+    border-radius: 16px;
     padding: 22px 20px 20px;
   }
 
   .popup-card__body {
-    padding: 22px 0;
+    padding: 20px 0;
   }
 
   .popup-card__actions {

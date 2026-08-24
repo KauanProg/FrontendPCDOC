@@ -1,15 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, input, model, output } from '@angular/core';
-import { FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormValueControl, ValidationError } from '@angular/forms/signals';
-import { NgxMaskDirective } from 'ngx-mask';
 
 /**
  * Componente reutilizável de campo de texto com controles nativos.
  *
  * ## 📌 Funcionalidades
  * - Integração com Reactive Forms
- * - Suporte a máscaras (ngx-mask)
  * - Ícones prefixo e sufixo
  * - Exibição automática de mensagens de erro
  *
@@ -42,12 +39,12 @@ import { NgxMaskDirective } from 'ngx-mask';
 @Component({
   selector: 'app-text-field',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgxMaskDirective],
+  imports: [CommonModule],
   templateUrl: './text-field.html',
   styleUrl: './text-field.scss',
 })
-export class TextFieldComponent implements FormValueControl<string> {
-  readonly value = model('');
+export class TextFieldComponent implements FormValueControl<unknown> {
+  readonly value = model<unknown>('');
   readonly disabled = input(false);
   readonly required = input(false);
   readonly errors = input<readonly ValidationError.WithOptionalFieldTree[]>([]);
@@ -60,13 +57,6 @@ export class TextFieldComponent implements FormValueControl<string> {
   /**
    * Formulário reativo que contém o controle
    */
-  @Input() form?: FormGroup;
-
-  /**
-   * Nome do FormControl dentro do FormGroup
-   */
-  @Input() controlName!: string;
-
   /**
    * Label exibida acima do campo
    */
@@ -83,8 +73,6 @@ export class TextFieldComponent implements FormValueControl<string> {
   /**
    * Máscara do campo (ex: '000.000.000-00' para CPF)
    */
-  @Input() mask?: string;
-
   @Input() prefix = '';
 
   @Input() suffix = '';
@@ -116,15 +104,11 @@ export class TextFieldComponent implements FormValueControl<string> {
   }
 
   get shouldUseNumericOnly(): boolean {
-    return this.numericOnly() || this.controlName === 'number' || this.controlName === 'cpfCnpj';
+    return this.numericOnly();
   }
 
   get showRequiredMarker(): boolean {
-    const control = this.form?.get(this.controlName);
-
-    return (
-      this.label.includes('*') || this.required() || !!control?.hasValidator?.(Validators.required)
-    );
+    return this.label.includes('*') || this.required();
   }
 
   /**
@@ -138,61 +122,24 @@ export class TextFieldComponent implements FormValueControl<string> {
    * @returns string | null
    */
   getErrorMessage(): string | null {
-    const control = this.form?.get(this.controlName);
-
-    if (!control) {
-      if (!(this.touched() || this.dirty())) {
-        return null;
-      }
-
-      const error = this.errors()[0];
-      return error?.message ?? (error ? 'Valor inválido' : null);
-    }
-
-    // Se não existir controle ou não houver erro, não mostra mensagem
-    if (!control || !control.errors || !(control.touched || control.dirty)) {
+    if (!(this.touched() || this.dirty())) {
       return null;
     }
 
-    // Campo obrigatório
-    if (control.errors['required']) {
-      return 'Este campo é obrigatório';
-    }
-
-    // Validação de tamanho mínimo
-    if (control.errors['minlength']) {
-      const requiredLength = control.errors['minlength'].requiredLength;
-      return `Mínimo de ${requiredLength} caracteres`;
-    }
-
-    // Erro genérico
-    return 'Valor inválido';
+    const error = this.errors()[0];
+    return error?.message ?? (error ? 'Valor inválido' : null);
   }
 
   protected onInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const value = this.shouldUseNumericOnly ? input.value.replace(/\D/g, '') : input.value;
-
-    if (input.value !== value) {
-      input.value = value;
-    }
-
-    const control = this.form?.get(this.controlName);
-    if (control) {
-      control.setValue(value);
-      control.markAsDirty();
-    } else {
-      this.value.set(value);
-    }
-
-    this.inputChange.emit(value);
+    const rawValue = this.shouldUseNumericOnly ? input.value.replace(/\D/g, '') : input.value;
+    const nextValue = this.shouldUseNumericOnly && rawValue !== '' ? Number(rawValue) : rawValue;
+    this.value.set(nextValue);
+    this.inputChange.emit(rawValue);
   }
 
   protected onSignalBlur(): void {
     this.touch.emit();
   }
 
-  protected get isDisabled(): boolean {
-    return this.form ? !!this.form.get(this.controlName)?.disabled : this.disabled();
-  }
 }

@@ -1,3 +1,163 @@
-<section class="title"><div><h2>Histórico de movimentações</h2><p>Acompanhe entradas e saídas do estoque.</p></div><button class="primary" (click)="openMovement()">＋ Registrar movimentação</button></section>
-<div class="card"><div class="toolbar"><div><h3>Últimas movimentações</h3><small>Registro atualizado em tempo real</small></div><select [(ngModel)]="selectedProduct" (change)="load()"><option value="">Selecione um produto</option><option *ngFor="let p of facade.products()" [value]="p.id">{{p.name}}</option></select></div><table><thead><tr><th>Produto</th><th>Tipo</th><th>Quantidade</th><th>Valor unitário</th><th>Data</th></tr></thead><tbody><tr *ngFor="let m of facade.movements()"><td><strong>{{productName(m.productId)}}</strong></td><td><span class="tag" [class.out]="m.type==='VENDA'">{{m.type==='VENDA'?'Saída':'Entrada'}}</span></td><td>{{m.quantity}} un.</td><td>{{m.unitPrice|currency:'BRL'}}</td><td>{{m.createdAt|date:'dd/MM/yyyy HH:mm'}}</td></tr><tr *ngIf="!facade.movements().length"><td colspan="5" class="empty">Selecione um produto para consultar as movimentações reais.</td></tr></tbody></table></div>
-<div class="modal" *ngIf="showModal"><div class="dialog"><div class="dialog-head"><div><span class="eyebrow">ESTOQUE</span><h3>Registrar movimentação</h3></div><button class="close" (click)="showModal=false">×</button></div><label>Produto<select [(ngModel)]="selectedProduct"><option value="" disabled>Selecione um produto</option><option *ngFor="let p of facade.products()" [value]="p.id">{{p.name}}</option></select></label><label>Tipo<select [(ngModel)]="movementType"><option value="ENTRADA">Entrada de estoque</option><option value="SAIDA">Saída de estoque</option></select></label><label>Quantidade<input type="number" [(ngModel)]="quantity" min="1"></label><footer><button class="secondary" (click)="showModal=false">Cancelar</button><button class="primary" (click)="submit()">Salvar movimentação</button></footer></div></div>
+<section class="title">
+  <div>
+    <h2>Histórico de movimentações</h2>
+    <p>Acompanhe entradas e saídas do estoque.</p>
+  </div>
+</section>
+<div class="card">
+  <div class="toolbar">
+    <div>
+      <h3>Últimas movimentações</h3>
+      <small>Registro atualizado em tempo real</small>
+    </div>
+    <span>{{ facade.movementsPage().totalElements }} movimentações</span>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th
+            (click)="toggleSort('product')"
+            [attr.aria-sort]="
+              sortKey === 'product'
+                ? sortDirection === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+            "
+          >
+            Produto <span class="sort-indicator">{{ sortIndicator('product') }}</span>
+          </th>
+          <th
+            (click)="toggleSort('type')"
+            [attr.aria-sort]="
+              sortKey === 'type' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'
+            "
+          >
+            Tipo <span class="sort-indicator">{{ sortIndicator('type') }}</span>
+          </th>
+          <th
+            (click)="toggleSort('quantity')"
+            [attr.aria-sort]="
+              sortKey === 'quantity'
+                ? sortDirection === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+            "
+          >
+            Quantidade <span class="sort-indicator">{{ sortIndicator('quantity') }}</span>
+          </th>
+          <th
+            (click)="toggleSort('unitPrice')"
+            [attr.aria-sort]="
+              sortKey === 'unitPrice'
+                ? sortDirection === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+            "
+          >
+            Valor unitário <span class="sort-indicator">{{ sortIndicator('unitPrice') }}</span>
+          </th>
+          <th
+            (click)="toggleSort('total')"
+            [attr.aria-sort]="
+              sortKey === 'total' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'
+            "
+          >
+            Valor total <span class="sort-indicator">{{ sortIndicator('total') }}</span>
+          </th>
+          <th
+            (click)="toggleSort('createdAt')"
+            [attr.aria-sort]="
+              sortKey === 'createdAt'
+                ? sortDirection === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+            "
+          >
+            Data <span class="sort-indicator">{{ sortIndicator('createdAt') }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of rows()">
+          <td>
+            <strong>{{ productName(m.productId) }}</strong>
+          </td>
+          <td>
+            <span class="tag" [class.out]="m.type === 'SALE'">{{
+              m.type === 'SALE' ? 'Saída' : 'Entrada'
+            }}</span>
+          </td>
+          <td>{{ m.quantity }} un.</td>
+          <td>{{ m.unitPrice | currency: 'BRL' }}</td>
+          <td>{{ m.total | currency: 'BRL' }}</td>
+          <td>{{ m.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        </tr>
+        <tr *ngIf="!facade.movements().length">
+          <td colspan="6" class="empty">Nenhuma movimentação registrada.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <footer class="table-pagination" aria-label="Paginação da tabela de movimentações">
+    <button
+      type="button"
+      class="table-pagination__arrow"
+      aria-label="Página anterior"
+      [disabled]="page === 1"
+      (click)="goToPage(page - 1)"
+    >
+      ‹
+    </button>
+    <div class="table-pagination__pages">
+      <button
+        type="button"
+        *ngFor="let pageNumber of pages()"
+        class="table-pagination__page"
+        [class.table-pagination__page--active]="page === pageNumber"
+        (click)="goToPage(pageNumber)"
+      >
+        {{ pageNumber }}
+      </button>
+    </div>
+    <button
+      type="button"
+      class="table-pagination__arrow"
+      aria-label="Próxima página"
+      [disabled]="page === totalPages()"
+      (click)="goToPage(page + 1)"
+    >
+      ›
+    </button>
+  </footer>
+</div>
+<div class="modal" *ngIf="showModal">
+  <div class="dialog">
+    <div class="dialog-head">
+      <div>
+        <span class="eyebrow">ESTOQUE</span>
+        <h3>Registrar movimentação</h3>
+      </div>
+      <button class="close" (click)="showModal = false">×</button>
+    </div>
+    <label
+      >Produto<select [(ngModel)]="selectedProduct">
+        <option value="" disabled>Selecione um produto</option>
+        <option *ngFor="let p of facade.products()" [value]="p.id">{{ p.name }}</option>
+      </select></label
+    ><label
+      >Tipo<select [(ngModel)]="movementType">
+        <option value="ENTRADA">Entrada de estoque</option>
+        <option value="SAIDA">Saída de estoque</option>
+      </select></label
+    ><label>Quantidade<input type="number" [(ngModel)]="quantity" min="1" /></label>
+    <footer>
+      <button class="secondary" (click)="showModal = false">Cancelar</button
+      ><button class="primary" (click)="submit()">Salvar movimentação</button>
+    </footer>
+  </div>
+</div>

@@ -1,68 +1,189 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormField, form, min, required } from '@angular/forms/signals';
 import { NgIcon } from '@ng-icons/core';
-import { SearchFieldComponent } from '../../../../shared/ui/forms/search-field/search-field';
 import { TextFieldComponent } from '../../../../shared/ui/forms/text-field/text-field';
 import { PopupComponent } from '../../../../shared/ui/overlays/popup/popup';
 import { ProductsFacade } from '../../facade/products.facade';
 import { Product } from '../../models/products.models';
+import { NotificationService } from '../../../../shared/ui/feedback/notification/notification.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { getApiErrorMessage } from '../../../../shared/utils/http-error.util';
+
 @Component({
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NgIcon, SearchFieldComponent, TextFieldComponent, PopupComponent],
+  imports: [CommonModule, FormField, NgIcon, TextFieldComponent, PopupComponent],
   templateUrl: './products-list.html',
-  styleUrl: './products-list.css'
+  styleUrl: './products-list.css',
 })
-export class ProductsPage {
+export class ProductsPage implements OnDestroy {
   facade = inject(ProductsFacade);
-  searchForm = new FormGroup({ search: new FormControl('') });
-  quantityForm = new FormGroup({ quantity: new FormControl(1, { nonNullable: true, validators: [Validators.required, Validators.min(1)] }) });
-  productForm = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    description: new FormControl('', { nonNullable: true }),
-    price: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
-    quantity: new FormControl(0, { nonNullable: true, validators: [Validators.required, Validators.min(0)] }),
+  private readonly notifications = inject(NotificationService);
+  searchModel = signal({ search: '' });
+  searchForm = form(this.searchModel);
+  quantityModel = signal({ quantity: 1 });
+  quantityForm = form(this.quantityModel, (schemaPath) => {
+    required(schemaPath.quantity, { message: 'Informe a quantidade' });
+    min(schemaPath.quantity, 1, { message: 'A quantidade deve ser maior que zero' });
+  });
+  productModel = signal({ name: '', description: '', price: 0, quantity: 0 });
+  productForm = form(this.productModel, (schemaPath) => {
+    required(schemaPath.name, { message: 'Informe o nome' });
+    required(schemaPath.price, { message: 'Informe o preço' });
+    min(schemaPath.price, 0, { message: 'O preço não pode ser negativo' });
+    required(schemaPath.quantity, { message: 'Informe a quantidade' });
+    min(schemaPath.quantity, 0, { message: 'A quantidade não pode ser negativa' });
   });
   page = 1;
-  readonly pageSize = 8;
+  sortKey: 'name' | 'price' | 'quantity' = 'name';
+  sortDirection: 'asc' | 'desc' = 'asc';
+  readonly pageSize = 12;
   editing = false;
   movement: { product: Product; type: 'ENTRADA' | 'SAIDA' } | null = null;
   deleting: Product | null = null;
-  get deleteMessage() { return this.deleting ? `Deseja excluir ${this.deleting.name}?` : ''; }
   form: Product = { name: '', description: '', price: 0, quantity: 0 };
+  private searchDebounce?: ReturnType<typeof setTimeout>;
+
   constructor() {
-    this.facade.findAll();
+    this.loadProducts();
   }
-  filtered() {
-    return this.facade
-      .products()
-      .filter((p) => p.name.toLowerCase().includes((this.searchForm.value.search ?? '').toLowerCase()));
+
+  ngOnDestroy() {
+    if (this.searchDebounce) {
+      clearTimeout(this.searchDebounce);
+    }
   }
+
+  loadProducts() {
+    this.facade.findAll(this.page - 1, this.searchModel().search, this.sortKey, this.sortDirection);
+  }
+
+  onSearch() {
+    if (this.searchDebounce) {
+      clearTimeout(this.searchDebounce);
+    }
+
+    this.searchDebounce = setTimeout(() => {
+      this.page = 1;
+      this.loadProducts();
+      this.searchDebounce = undefined;
+    }, 400);
+  }
+
   open(p?: Product) {
     this.form = p ? { ...p } : { name: '', description: '', price: 0, quantity: 0 };
-    this.productForm.reset({ name: this.form.name, description: this.form.description, price: this.form.price, quantity: this.form.quantity });
+    this.productModel.set({
+      name: this.form.name,
+      description: this.form.description,
+      price: this.form.price,
+      quantity: this.form.quantity,
+    });
+    this.productForm().reset();
     this.editing = true;
   }
+
   save() {
-    if (this.productForm.invalid) { this.productForm.markAllAsTouched(); return; }
-    const values = this.productForm.getRawValue();
-    this.facade.save({ ...this.form, name: values.name, description: values.description, price: Number(values.price), quantity: Number(values.quantity) }).subscribe(() => {
-      this.editing = false;
-      this.facade.findAll();
+    if (this.productForm().invalid()) {
+      this.productForm().markAsTouched();
+      return;
+    }
+    const values = this.productModel();
+    this.facade.save({ ...this.form, ...values }).subscribe({
+      next: () => {
+        this.editing = false;
+        this.loadProducts();
+        this.notifications.success(
+          this.form.id ? 'Produto atualizado com sucesso.' : 'Produto criado com sucesso.',
+        );
+      },
+      error: (error: HttpErrorResponse) =>
+        this.notifications.error(getApiErrorMessage(error, 'Não foi possível salvar o produto.')),
     });
   }
-  rows() { const start = (this.page - 1) * this.pageSize; return this.filtered().slice(start, start + this.pageSize); }
-  totalPages() { return Math.max(1, Math.ceil(this.filtered().length / this.pageSize)); }
-  pages() { return Array.from({ length: this.totalPages() }, (_, index) => index + 1); }
-  goToPage(page: number) { if (page >= 1 && page <= this.totalPages()) this.page = page; }
-  remove(product: Product) { this.deleting = product; }
-  confirmDelete() { const product = this.deleting; if (product?.id) this.facade.delete(product.id).subscribe(() => this.facade.findAll()); this.deleting = null; }
-  buy(product: Product) { this.openMovement(product, 'ENTRADA'); }
-  sell(product: Product) { this.openMovement(product, 'SAIDA'); }
-  openMovement(product: Product, type: 'ENTRADA' | 'SAIDA') { this.quantityForm.reset({ quantity: 1 }); this.movement = { product, type }; }
-  confirmMovement() { const current = this.movement; const quantity = this.quantityForm.value.quantity; if (current?.product.id && quantity && this.quantityForm.valid) this.facade.movement(current.product.id, current.type, quantity).subscribe(() => this.facade.findAll()); this.movement = null; }
+
+  rows() {
+    return this.facade.products();
+  }
+
+  toggleSort(key: 'name' | 'price' | 'quantity') {
+    if (this.sortKey === key) this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    else {
+      this.sortKey = key;
+      this.sortDirection = 'asc';
+    }
+    this.page = 1;
+    this.loadProducts();
+  }
+
+  sortIndicator(key: 'name' | 'price' | 'quantity') {
+    return this.sortKey === key ? (this.sortDirection === 'asc' ? '↑' : '↓') : '↕';
+  }
+
+  totalPages() {
+    return Math.max(1, this.facade.productsPage().totalPages);
+  }
+
+  pages() {
+    const total = this.totalPages();
+    const start = Math.floor((this.page - 1) / 5) * 5 + 1;
+    return Array.from({ length: Math.min(5, total - start + 1) }, (_, index) => start + index);
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.page = page;
+      this.loadProducts();
+    }
+  }
+
+  remove(product: Product) {
+    this.deleting = product;
+  }
+
+  confirmDelete() {
+    const product = this.deleting;
+    if (product?.id)
+      this.facade.delete(product.id).subscribe({
+        next: () => {
+          this.loadProducts();
+          this.notifications.success('Produto excluído com sucesso.');
+        },
+        error: () => this.notifications.error('Não foi possível excluir o produto.'),
+      });
+    this.deleting = null;
+  }
+
+  buy(product: Product) {
+    this.openMovement(product, 'ENTRADA');
+  }
+
+  sell(product: Product) {
+    this.openMovement(product, 'SAIDA');
+  }
+
+  openMovement(product: Product, type: 'ENTRADA' | 'SAIDA') {
+    this.quantityModel.set({ quantity: 1 });
+    this.quantityForm().reset();
+    this.movement = { product, type };
+  }
+
+  confirmMovement() {
+    const current = this.movement;
+    const quantity = this.quantityModel().quantity;
+    if (current?.product.id && quantity && this.quantityForm().valid())
+      this.facade.movement(current.product.id, current.type, quantity).subscribe({
+        next: () => {
+          this.loadProducts();
+          this.notifications.success(
+            current.type === 'ENTRADA'
+              ? 'Entrada registrada com sucesso.'
+              : 'Venda registrada com sucesso.',
+          );
+        },
+        error: () => this.notifications.error('Não foi possível registrar a movimentação.'),
+      });
+    else this.quantityForm().markAsTouched();
+    this.movement = null;
+  }
 }
-
-
-
 

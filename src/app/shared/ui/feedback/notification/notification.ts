@@ -48,7 +48,7 @@ export class NotificationComponent {
       case 'success':
         return 'phosphorCheck';
       case 'error':
-        return 'phosphorExclamationMark';
+        return 'phosphorXCircle';
       case 'warning':
         return 'phosphorExclamationMark';
       case 'info':
