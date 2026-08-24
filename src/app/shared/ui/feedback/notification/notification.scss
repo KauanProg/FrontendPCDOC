@@ -13,14 +13,14 @@
 }
 
 .notification-card {
-  --notification-bg: #eef8e8;
-  --notification-accent: #49a333;
-  --notification-text: #49a333;
+  --notification-bg: var(--color-surface-success);
+  --notification-accent: var(--color-success);
+  --notification-text: var(--color-success);
   position: relative;
   overflow: hidden;
   border-radius: 8px;
   background: var(--notification-bg);
-  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 18px 38px var(--color-shadow-notification);
   pointer-events: auto;
 }
 
@@ -88,27 +88,27 @@
 }
 
 .notification-card--success {
-  --notification-bg: #eef8e8;
-  --notification-accent: #4ea32f;
-  --notification-text: #4ea32f;
+  --notification-bg: var(--color-surface-success);
+  --notification-accent: var(--color-success-dark);
+  --notification-text: var(--color-success-dark);
 }
 
 .notification-card--error {
-  --notification-bg: #f8d7dc;
-  --notification-accent: #cf0f0f;
-  --notification-text: #cf0f0f;
+  --notification-bg: var(--color-danger-soft);
+  --notification-accent: var(--color-danger-notification);
+  --notification-text: var(--color-danger-notification);
 }
 
 .notification-card--warning {
-  --notification-bg: #fff4d8;
-  --notification-accent: #d88000;
-  --notification-text: #d88000;
+  --notification-bg: var(--color-warning-light);
+  --notification-accent: var(--color-warning-notification);
+  --notification-text: var(--color-warning-notification);
 }
 
 .notification-card--info {
-  --notification-bg: #e3f3ff;
-  --notification-accent: #007bcc;
-  --notification-text: #007bcc;
+  --notification-bg: var(--color-info-light);
+  --notification-accent: var(--color-info-text);
+  --notification-text: var(--color-info-text);
 }
 
 @keyframes notification-progress {
@@ -146,3 +146,4 @@
     align-self: flex-start;
   }
 }
+

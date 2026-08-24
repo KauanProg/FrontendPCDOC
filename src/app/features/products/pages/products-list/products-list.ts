@@ -37,7 +37,6 @@ export class ProductsPage implements OnDestroy {
   page = 1;
   sortKey: 'name' | 'price' | 'quantity' = 'name';
   sortDirection: 'asc' | 'desc' = 'asc';
-  readonly pageSize = 12;
   editing = false;
   movement: { product: Product; type: 'ENTRADA' | 'SAIDA' } | null = null;
   deleting: Product | null = null;

@@ -141,5 +141,5 @@ export class TextFieldComponent implements FormValueControl<unknown> {
   protected onSignalBlur(): void {
     this.touch.emit();
   }
-
 }
+

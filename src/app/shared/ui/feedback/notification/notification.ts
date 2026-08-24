@@ -1,17 +1,8 @@
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { NgIcon } from '@ng-icons/core';
 
-import {
-  NotificationItem,
-  NotificationService,
-  NotificationVariant,
-} from './notification.service';
+import { NotificationItem, NotificationService, NotificationVariant } from './notification.service';
 
 interface NotificationViewModel extends NotificationItem {
   readonly icon: string;
@@ -29,14 +20,12 @@ interface NotificationViewModel extends NotificationItem {
 export class NotificationComponent {
   private readonly notificationService = inject(NotificationService);
 
-  protected readonly notifications = computed<
-    readonly NotificationViewModel[]
-  >(() =>
+  protected readonly notifications = computed<readonly NotificationViewModel[]>(() =>
     this.notificationService.notifications().map((notification) => ({
       ...notification,
       icon: this.getIcon(notification.variant),
       closeLabel: `Fechar notificacao: ${notification.message}`,
-    }))
+    })),
   );
 
   protected close(id: number): void {
@@ -56,3 +45,4 @@ export class NotificationComponent {
     }
   }
 }
+

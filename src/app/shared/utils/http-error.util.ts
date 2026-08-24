@@ -6,3 +6,4 @@ export function getApiErrorMessage(
 ): string {
   return typeof error.error?.message === 'string' ? error.error.message : fallback;
 }
+

@@ -18,14 +18,13 @@ export class MovementsPage {
   quantity = 1;
   showModal = false;
   page = 1;
-  readonly pageSize = 12;
   sortKey: 'product' | 'type' | 'quantity' | 'unitPrice' | 'total' | 'createdAt' = 'createdAt';
   sortDirection: 'asc' | 'desc' = 'desc';
+
   constructor() {
     this.loadMovements();
   }
 
-  
   loadMovements() {
     this.facade.loadAllHistory(this.page - 1, '', this.sortKey, this.sortDirection);
   }

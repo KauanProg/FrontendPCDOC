@@ -1,1 +1,30 @@
-<div class="shell"><div class="drawer-backdrop" [class.visible]="drawerOpen()" (click)="closeDrawer()"></div><aside [class.open]="drawerOpen()"><div class="brand"><img src="/images/logos/logo.jpg" alt="PCDOC" /></div><p class="eyebrow">GESTÃO DE ESTOQUE</p><nav><a routerLink="/produtos" routerLinkActive="active" (click)="closeDrawer()"><ng-icon name="phosphorPackage"></ng-icon><span>Produtos</span></a><a routerLink="/movimentacoes" routerLinkActive="active" (click)="closeDrawer()"><ng-icon name="phosphorArrowsDownUp"></ng-icon><span>Movimentações</span></a></nav><div class="aside-foot">PCDOC<br><small>Controle simples, estoque inteligente.</small></div></aside><main><header class="mobile-header"><button class="menu-toggle" type="button" (click)="toggleDrawer()" [attr.aria-expanded]="drawerOpen()" aria-label="Abrir menu"><ng-icon name="phosphorList"></ng-icon></button></header><div class="content"><router-outlet /></div></main></div><app-notification />
+<div class="shell">
+  <div class="drawer-backdrop" [class.visible]="drawerOpen()" (click)="closeDrawer()"></div>
+  <aside [class.open]="drawerOpen()">
+    <div class="brand"><img src="/images/logos/logo.jpg" alt="PCDOC" /></div>
+    <p class="eyebrow">GESTÃO DE ESTOQUE</p>
+    <nav>
+      <a routerLink="/produtos" routerLinkActive="active" (click)="closeDrawer()"
+        ><ng-icon name="phosphorPackage"></ng-icon><span>Produtos</span></a
+      ><a routerLink="/movimentacoes" routerLinkActive="active" (click)="closeDrawer()"
+        ><ng-icon name="phosphorArrowsDownUp"></ng-icon><span>Movimentações</span></a
+      >
+    </nav>
+    <div class="aside-foot">PCDOC<br /><small>Controle simples, estoque inteligente.</small></div>
+  </aside>
+  <main>
+    <header class="mobile-header">
+      <button
+        class="menu-toggle"
+        type="button"
+        (click)="toggleDrawer()"
+        [attr.aria-expanded]="drawerOpen()"
+        aria-label="Abrir menu"
+      >
+        <ng-icon name="phosphorList"></ng-icon>
+      </button>
+    </header>
+    <div class="content"><router-outlet /></div>
+  </main>
+</div>
+<app-notification />

@@ -1,17 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgIcon } from '@ng-icons/core';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
-export type PopupTone =
-  | 'danger'
-  | 'warning'
-  | 'success';
+export type PopupTone = 'danger' | 'warning' | 'success';
 
 @Component({
   selector: 'app-popup',
@@ -53,3 +44,4 @@ export class PopupComponent {
     this.cancel.emit();
   }
 }
+

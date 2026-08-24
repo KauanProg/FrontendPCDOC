@@ -1,10 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 
-export type NotificationVariant =
-  | 'success'
-  | 'error'
-  | 'warning'
-  | 'info';
+export type NotificationVariant = 'success' | 'error' | 'warning' | 'info';
 
 export interface NotificationItem {
   readonly id: number;
@@ -50,16 +46,10 @@ export class NotificationService {
       this.timeoutById.delete(id);
     }
 
-    this.notifications.update((items) =>
-      items.filter((item) => item.id !== id)
-    );
+    this.notifications.update((items) => items.filter((item) => item.id !== id));
   }
 
-  private open(
-    variant: NotificationVariant,
-    message: string,
-    options?: NotificationOptions
-  ): void {
+  private open(variant: NotificationVariant, message: string, options?: NotificationOptions): void {
     const id = ++this.nextId;
     const duration = options?.duration ?? 2000;
     const item: NotificationItem = {
@@ -78,3 +68,4 @@ export class NotificationService {
     this.timeoutById.set(id, timeoutId);
   }
 }
+

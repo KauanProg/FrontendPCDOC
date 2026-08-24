@@ -7,6 +7,17 @@ import { NotificationComponent } from './shared/ui/feedback/notification/notific
   selector: 'app-root',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, NgIcon, NotificationComponent],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
-export class App { readonly drawerOpen = signal(false); closeDrawer(){this.drawerOpen.set(false)} toggleDrawer(){this.drawerOpen.update(open=>!open)} }
+export class App {
+  readonly drawerOpen = signal(false);
+
+  closeDrawer() {
+    this.drawerOpen.set(false);
+  }
+
+  toggleDrawer() {
+    this.drawerOpen.update((open) => !open);
+  }
+}
+
