@@ -85,7 +85,7 @@
       <tbody>
         <tr *ngFor="let m of rows()">
           <td>
-            <strong>{{ productName(m.productId) }}</strong>
+            <strong>{{ m.productName }}</strong>
           </td>
           <td>
             <span class="tag" [class.out]="m.type === 'SALE'">{{

@@ -2,7 +2,6 @@ import { Injectable, signal } from '@angular/core';
 import { ProductsService } from '../services/products.service';
 import { Product, Movement, PageResponse } from '../models/products.models';
 import { NotificationService } from '../../../shared/ui/feedback/notification/notification.service';
-import { forkJoin, of } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
@@ -82,19 +81,6 @@ export class ProductsFacade {
       next: (response) => {
         this.movementsPage.set(response);
         this.movements.set(response.content);
-        const ids = [...new Set(response.content.map((movement) => movement.productId))];
-        const known = this.products();
-        const missing = ids.filter((id) => !known.some((product) => product.id === id));
-        (missing.length
-          ? forkJoin(missing.map((id) => this.service.findById(id)))
-          : of([])
-        ).subscribe({
-          next: (products) => this.products.set([...known, ...products]),
-          error: () =>
-            this.notifications.warning(
-              'Não foi possível carregar o nome de alguns produtos do histórico.',
-            ),
-        });
       },
       error: () => {
         this.movements.set([]);

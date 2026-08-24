@@ -8,6 +8,7 @@ export interface Product {
 export interface Movement {
   id?: string;
   productId: string;
+  productName: string;
   type: string;
   quantity: number;
   unitPrice: number;

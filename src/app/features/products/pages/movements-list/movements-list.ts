@@ -64,10 +64,6 @@ export class MovementsPage {
     return this.sortKey === key ? (this.sortDirection === 'asc' ? '↑' : '↓') : '↕';
   }
 
-  productName(id: string) {
-    return this.facade.products().find((p) => p.id === id)?.name ?? id;
-  }
-
   totalStock() {
     return this.facade.products().reduce((sum, p) => sum + p.quantity, 0);
   }
